@@ -13,8 +13,8 @@ digit [0-9]
 	void yyerror(const char *);
 %}
 %% 
-[ \t]   ; 
-[ \n] {yylineo = yylineo +1;}
+[ \t]   ;  
+[ \n] ; 
 "if" return T_IF; 
 "else" return T_ELSE; 
 "while" return T_WHILE; 
@@ -40,10 +40,17 @@ digit [0-9]
 ">" return T_GT; 
 "+" return T_ADD;  
 "-" return T_SUB; 
-"*" return T_MULT; 
+"*" return T_MULT;  
+\/\*(.*\n)*.*\*\/     ; 
 "/" return T_DIV; 
-"/*" {comment();}
-
+"(" return T_OPENP; 
+")" return T_CLOSEP; 
+"{" return T_OPENB; 
+"}" return T_CLOSEB; 
+";" return T_SEMI; 
+"," return T_COMM; 
+"." return T_PERIOD;  
+"->" return T_RET; 
 .                 { yyerror("invalid character"); }
 
 %%
@@ -52,15 +59,3 @@ int yywrap(void) {
   return 1;
 }  
 
-void comment(void)
-{
-	char c, prev = 0;
-  
-	while ((c = input()) != 0)      /* (EOF maps to 0) */
-	{
-		if (c == '/' && prev == '*')
-			return;
-		prev = c;
-	}
-	yyerror("dangling comment");
-}
