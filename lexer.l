@@ -50,7 +50,8 @@ digit [0-9]
 ";" return T_SEMI; 
 "," return T_COMM; 
 "." return T_PERIOD;  
-"->" return T_RET; 
+"->" return T_RET;   
+<<EOF>> return 0; 
 .                 { yyerror("invalid character"); }
 
 %%
