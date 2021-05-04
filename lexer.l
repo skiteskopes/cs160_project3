@@ -1,5 +1,6 @@
 alpha [a-zA-Z] 
-digit [0-9]
+digit [0-9] 
+
 %option yylineno
 %pointer
 
@@ -11,7 +12,8 @@ digit [0-9]
     #include "parser.hpp"
     
 	void yyerror(const char *);
-%}
+%}  
+%x COMMENT 
 %% 
 [ \t]   ;  
 [ \n] ; 
@@ -27,7 +29,6 @@ digit [0-9]
 "equals" return T_EQUALS; 
 "and" return T_AND; 
 "or" return T_OR; 
-"not" return T_NOT; 
 "true" return T_TRUE; 
 "false" return T_FALSE; 
 "extends" return T_EXTENDS; 
@@ -40,8 +41,7 @@ digit [0-9]
 ">" return T_GT; 
 "+" return T_ADD;  
 "-" return T_SUB; 
-"*" return T_MULT;  
-\/\*(.*\n)*.*\*\/     ; 
+"*" return T_MULT;   
 "/" return T_DIV; 
 "(" return T_OPENP; 
 ")" return T_CLOSEP; 
@@ -51,8 +51,16 @@ digit [0-9]
 "," return T_COMM; 
 "." return T_PERIOD;  
 "->" return T_RET;   
-<<EOF>> return 0; 
-.                 { yyerror("invalid character"); }
+
+"/*" {BEGIN(COMMENT); }; 
+<COMMENT>"*/" {BEGIN(INITIAL);} 
+<COMMENT>\n { } 
+<COMMENT>. { } 
+<COMMENT><<EOF>> {yyerror("dangling comment");}   
+.                 { yyerror("invalid character"); }  
+
+
+
 
 %%
 

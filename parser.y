@@ -9,7 +9,7 @@
     void yyerror(const char *);
 %}
 
-%error-verbose
+%define parse.error verbose
 
 %token T_INTEGER T_BOOLEAN   
 %token T_WHILE 
@@ -17,7 +17,7 @@
 %token T_EXTENDS T_DO  T_PRINT T_RETURN T_NEW
 %token T_NUM T_NONE T_ID  T_FALSE T_TRUE  
 %token T_OPENP T_CLOSEP T_OPENB T_CLOSEB T_SEMI T_COMM T_PERIOD T_RET 
-%right T_ASSI  
+%token T_ASSI   
 %left T_OR  
 %left T_AND 
 %left T_GREATEQ  T_GT  T_EQUALS
@@ -70,6 +70,7 @@ EXP: EXP T_ADD EXP
       | EXP T_EQUALS EXP 
       | EXP T_AND EXP 
       | EXP T_OR EXP 
+      | EXP T_NOT EXP  
       | T_NOT EXP 
       | T_ID  
       | T_ID T_PERIOD T_ID  
